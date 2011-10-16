@@ -10,7 +10,6 @@ import java.util.Vector;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import android.app.Application;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
 
@@ -35,7 +34,7 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 	
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
     	// Set the background frame color
-        gl.glClearColor(0.1f, 0.3f, 0.1f, 1.0f);
+        gl.glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         
         // initialize the triangle vertex array
         initShapes();
@@ -110,6 +109,15 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 		        )));
 		    	this.drawMode = GL10.GL_TRIANGLES;
     	    	this.shapeCount = 3;
+		    	break;
+    		case 3:
+    			//points
+    			shapeCoords.addAll(((List<Float>)Arrays.asList(	
+		            -1.5f, -0.25f, 0f,
+		             0.5f, -1.25f, 0f
+		        )));
+		    	this.drawMode = GL10.GL_LINE_LOOP;
+    	    	this.shapeCount = 2;
 		    	break;
 		    default:
 		    	break;

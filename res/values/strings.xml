@@ -3,6 +3,7 @@
     <string name="title">Welcome to OpenGL ES!</string>
     <string name="app_name">Learning OpenGL ES</string>
     
-    <string name="button1">Button 1</string>
-    <string name="button2">Button 2</string>
+    <string name="a1">Square</string>
+    <string name="a2">Triangle</string>
+    <string name="a3">Other</string>
 </resources>

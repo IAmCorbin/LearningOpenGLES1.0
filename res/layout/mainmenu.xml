@@ -12,17 +12,24 @@
     android:layout_alignParentTop="true"
     />
  	<Button
-     android:id="@+id/button1"
+     android:id="@+id/a1"
      android:layout_height="wrap_content"
      android:layout_width="fill_parent"
-     android:text="@string/button1"
+     android:text="@string/a1"
      android:layout_below="@id/title"
      />
      <Button
-     android:id="@+id/button2"
+     android:id="@+id/a2"
      android:layout_height="wrap_content"
      android:layout_width="fill_parent"
-     android:text="@string/button2"
-     android:layout_below="@id/button1"
+     android:text="@string/a2"
+     android:layout_below="@id/a1"
+     />
+     <Button
+     android:id="@+id/a3"
+     android:layout_height="wrap_content"
+     android:layout_width="fill_parent"
+     android:text="@string/a3"
+     android:layout_below="@id/a2"
      />
 </RelativeLayout>
