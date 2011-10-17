@@ -65,7 +65,7 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
         
         // Enable use of vertex arrays
         gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-        //gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
+        gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
     }
     
     public void onDrawFrame(GL10 gl) {
@@ -95,11 +95,13 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
             float angle = 0.090f * ((int) time);
             gl.glRotatef(angle, 0.0f, 1.0f, 1.0f);
         }
-        // Draw the shapes
-        gl.glColor4f(0.63671875f, 0.76953125f, 0.22265625f, 0.0f);
-        gl.glVertexPointer(3, GL10.GL_FLOAT, 0, shapeVB);
-        //gl.glColorPointer(4, GL10.GL_FLOAT, 0, colorVB);
         
+        //gl.glColor4f(0.63671875f, 0.76953125f, 0.22265625f, 0.0f);
+        //Set the face rotation
+		gl.glFrontFace(GL10.GL_CCW);
+        gl.glVertexPointer(3, GL10.GL_FLOAT, 0, shapeVB);
+        gl.glColorPointer(4, GL10.GL_FLOAT, 0, colorVB);
+        // Draw the shapes
         if(this.activityNum > 3) {
         	//activity 4 - cube
         	//make smaller
@@ -161,17 +163,21 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
     	    	this.shapeCount = 3;
 		    	break;
     		case 3:
-    			//points
+    			//lines
     			shapeCoords.addAll(((List<Float>)Arrays.asList(	
 		            -1.5f, -0.25f, 0f,
-		             0.5f, -1.25f, 0f
+		             0.5f, -1.25f, 0f,
+		             0.25f, 0.5f, 1f,
+		             0.5f, -0.25f, 0.5f
 		        )));
     			colorCoords.addAll(((List<Float>)Arrays.asList(
 			            0.0f,  1.0f,  0.0f,  1.0f,
-			            0.0f,  1.0f,  0.0f,  1.0f
+			            0.0f,  1.0f,  0.0f,  1.0f,
+			            1.0f,  1.0f,  0.0f,  1.0f,
+			            0.0f,  1.0f,  1.0f,  1.0f
 			    								)));
-		    	this.drawMode = GL10.GL_LINE_LOOP;
-    	    	this.shapeCount = 2;
+		    	this.drawMode = GL10.GL_LINES;
+    	    	this.shapeCount = 4;
 		    	break;
     		case 4:
     			/** 
@@ -223,18 +229,18 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
         }
         shapeVB.put(fShapeCoords);    // add the coordinates to the FloatBuffer
         shapeVB.position(0);            // set the buffer to read the first coordinate
- /*
+
         //initialize color Buffer
         vbb = ByteBuffer.allocateDirect(colorCoords.size() * 4);
 		vbb.order(ByteOrder.nativeOrder());
 		colorVB = vbb.asFloatBuffer();
 		Float FColorCoords[] = (colorCoords.toArray(new Float[colorCoords.size()]));
-		float[] fColorCoords = new float[FShapeCoords.length];
+		float[] fColorCoords = new float[FColorCoords.length];
 		for(int n=0; n<FColorCoords.length; n++) {
 			fColorCoords[n] = FColorCoords[n].floatValue();
 		}
 		colorVB.put(fColorCoords);
 		colorVB.position(0);
-   */
+		
     }
 }
