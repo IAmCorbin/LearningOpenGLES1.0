@@ -39,4 +39,11 @@
      android:text="@string/a4"
      android:layout_below="@id/a3"
      />
+     <Button
+     android:id="@+id/a5"
+     android:layout_height="wrap_content"
+     android:layout_width="fill_parent"
+     android:text="@string/a5"
+     android:layout_below="@id/a4"
+     />
 </RelativeLayout>

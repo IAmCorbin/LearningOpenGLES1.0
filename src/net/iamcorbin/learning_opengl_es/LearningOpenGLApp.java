@@ -5,7 +5,7 @@ import android.app.Application;
 public class LearningOpenGLApp extends Application {
 
     private int activityNum;
-    private boolean b_touchmode = false;
+    private boolean b_touchmode = true;
 
     public int getActivityNum() {
         return activityNum;

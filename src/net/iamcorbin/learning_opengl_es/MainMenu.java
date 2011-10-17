@@ -13,7 +13,7 @@ import android.widget.Button;
  */
 public class MainMenu extends Activity implements OnClickListener {
 	
-	private Button[] buttons = new Button[4];
+	private Button[] buttons = new Button[5];
 	
     /** Called when the activity is first created. */
     @Override
@@ -25,6 +25,7 @@ public class MainMenu extends Activity implements OnClickListener {
         this.buttons[1] = (Button)findViewById(R.id.a2);
         this.buttons[2] = (Button)findViewById(R.id.a3);
         this.buttons[3] = (Button)findViewById(R.id.a4);
+        this.buttons[4] = (Button)findViewById(R.id.a5);
         for(int x=0; x < this.buttons.length; x++) {
         	this.buttons[x].setOnClickListener(this);
         }
@@ -33,25 +34,29 @@ public class MainMenu extends Activity implements OnClickListener {
     
     public void onClick(View v) {
     	Intent iOpenGL = new Intent(MainMenu.this, OpenGLActivity.class);
+    	int num;
+    	//set activity num
     	switch(v.getId()) {
     		case R.id.a1:
-    			((LearningOpenGLApp)this.getApplication()).setActivityNum(1);
+    			num = 1;
     			break;
     		case R.id.a2:
-    			//set activity num
-    			((LearningOpenGLApp)this.getApplication()).setActivityNum(2);
+    			num = 2;
     			break;
     		case R.id.a3:
-    			//set activity num
-    			((LearningOpenGLApp)this.getApplication()).setActivityNum(3);
+    			num = 3;
     			break;
     		case R.id.a4:
-    			//set activity num
-    			((LearningOpenGLApp)this.getApplication()).setActivityNum(4);
+    			num = 4;
     			break;
+    		case R.id.a5:
+    			num = 5;
+    			break;	
     		default:
+    			num = 0;
     			return;
     	}
+    	((LearningOpenGLApp)this.getApplication()).setActivityNum(num);
     	startActivity(iOpenGL);
     	
     }

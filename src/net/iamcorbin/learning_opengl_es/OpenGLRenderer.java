@@ -5,6 +5,7 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 import java.util.Vector;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -30,6 +31,9 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 	private int activityNum;
 	
 	public float mAngle;
+	
+	private final double PI = 3.141592653;
+	private int i_numVertices = 36;
 	
 	//cube indices for activity 4
 	private byte indices[] = {
@@ -102,7 +106,7 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
         gl.glVertexPointer(3, GL10.GL_FLOAT, 0, shapeVB);
         gl.glColorPointer(4, GL10.GL_FLOAT, 0, colorVB);
         // Draw the shapes
-        if(this.activityNum > 3) {
+        if(this.activityNum > 4) {
         	//activity 4 - cube
         	//make smaller
         	gl.glScalef(-0.5f, -0.5f, -0.5f);
@@ -180,6 +184,25 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
     	    	this.shapeCount = 4;
 		    	break;
     		case 4:
+    			//circle
+    			float R = 0.5f;
+    			float t = 0;
+    			Random rand = new Random();
+    			
+    			//center point
+    			shapeCoords.addAll(((List<Float>)Arrays.asList(0f, 0f, 0f)));
+    			colorCoords.addAll(((List<Float>)Arrays.asList(1.0f,  1.0f,  1.0f,  1.0f)));
+    			
+    			for(int n=0; n< i_numVertices; n++) {
+    				shapeCoords.addAll(((List<Float>)Arrays.asList((float) (R * Math.cos(t)), (float) (R * Math.sin(t)), 0f)));
+    				colorCoords.addAll(((List<Float>)Arrays.asList(rand.nextFloat(), rand.nextFloat(), rand.nextFloat(), 0f)));
+    				t += 2 * PI / i_numVertices;
+    			}
+    			
+		    	this.drawMode = GL10.GL_TRIANGLE_FAN;
+    	    	this.shapeCount = 37;
+		    	break;	
+    		case 5:
     			/** 
     			 * The initial vertex definition
     			 * 
