@@ -32,4 +32,11 @@
      android:text="@string/a3"
      android:layout_below="@id/a2"
      />
+     <Button
+     android:id="@+id/a4"
+     android:layout_height="wrap_content"
+     android:layout_width="fill_parent"
+     android:text="@string/a4"
+     android:layout_below="@id/a3"
+     />
 </RelativeLayout>

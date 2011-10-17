@@ -20,30 +20,52 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 	private LearningOpenGLApp App;
 	//shapes
 	private FloatBuffer shapeVB;
+	//colors
+	private FloatBuffer colorVB;
 	//drawmode
 	private int drawMode;
 	//count
 	private int shapeCount;
 	//activity number
 	private int activityNum;
-	//touch switch
-	private boolean b_touchSwitch;
 	
 	public float mAngle;
 	
+	//cube indices for activity 4
+	private byte indices[] = {
+				/*
+				 * Example: 
+				 * Face made of the vertices lower back left (lbl),
+				 * lfl, lfr, lbl, lfr, lbr
+				 */
+	            0, 4, 5,    0, 5, 1,
+	            //and so on...
+	            1, 5, 6,    1, 6, 2,
+	            2, 6, 7,    2, 7, 3,
+	            3, 7, 4,    3, 4, 0,
+	            4, 7, 6,    4, 6, 5,
+	            3, 0, 1,    3, 1, 2
+									};
+	private ByteBuffer indexBuffer;
+	
 	public OpenGLRenderer(LearningOpenGLApp app) {
 		this.App = app;
+		
+		indexBuffer = ByteBuffer.allocateDirect(indices.length);
+		indexBuffer.put(indices);
+		indexBuffer.position(0);
 	}
 	
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
     	// Set the background frame color
         gl.glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         
-        // initialize the triangle vertex array
+        // initialize the shapes
         initShapes();
         
         // Enable use of vertex arrays
         gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+        //gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
     }
     
     public void onDrawFrame(GL10 gl) {
@@ -63,7 +85,7 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
         // When using GL_MODELVIEW, you must set the view point
         GLU.gluLookAt(gl, 0, 0, -5, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
         
-        // Create a rotation for the triangle
+        // Create a rotation for shapes
         if(this.App.getTouchMode())
         	//touch rotate
         	gl.glRotatef(mAngle, 0.0f, 0.0f, 1.0f);
@@ -71,13 +93,22 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
         	//auto rotate
             long time = SystemClock.uptimeMillis() % 4000L;
             float angle = 0.090f * ((int) time);
-            gl.glRotatef(angle, 0.0f, 0.0f, 1.0f);
+            gl.glRotatef(angle, 0.0f, 1.0f, 1.0f);
         }
-        
-        // Draw the triangle
+        // Draw the shapes
         gl.glColor4f(0.63671875f, 0.76953125f, 0.22265625f, 0.0f);
         gl.glVertexPointer(3, GL10.GL_FLOAT, 0, shapeVB);
-        gl.glDrawArrays(this.drawMode, 0, shapeCount);
+        //gl.glColorPointer(4, GL10.GL_FLOAT, 0, colorVB);
+        
+        if(this.activityNum > 3) {
+        	//activity 4 - cube
+        	//make smaller
+        	gl.glScalef(-0.5f, -0.5f, -0.5f);
+        	//draw
+        	gl.glDrawElements(this.drawMode, this.shapeCount, GL10.GL_UNSIGNED_BYTE, this.indexBuffer);
+        	
+        } else 
+        	gl.glDrawArrays(this.drawMode, 0, this.shapeCount);
     }
     
     public void onSurfaceChanged(GL10 gl, int width, int height) {
@@ -94,6 +125,7 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
     private void initShapes(){
         
     	Vector<Float> shapeCoords = new Vector<Float>();
+    	Vector<Float> colorCoords = new Vector<Float>();
     	
     	switch(this.activityNum) {
     		case 1:
@@ -104,6 +136,12 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
     				0.5f, 0.5f, 0f,
     				0.5f, -0.5f, 0f
     			)));
+    			colorCoords.addAll(((List<Float>)Arrays.asList(
+			            0.0f,  1.0f,  0.0f,  1.0f,
+			            0.0f,  1.0f,  0.0f,  1.0f,
+			            1.0f,  0.5f,  0.0f,  1.0f,
+			            1.0f,  0.5f,  0.0f,  1.0f
+			    								)));
     			this.drawMode = GL10.GL_TRIANGLE_STRIP;
     	    	this.shapeCount = 4;
     			break;
@@ -114,6 +152,11 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 		             0.5f, -0.25f, 0f,
 		             0.0f,  0.559016994f, 0f
 		        )));
+    			colorCoords.addAll(((List<Float>)Arrays.asList(
+			            0.0f,  1.0f,  0.0f,  1.0f,
+			            0.0f,  1.0f,  0.0f,  1.0f,
+			            1.0f,  0.5f,  0.0f,  1.0f
+			    								)));
 		    	this.drawMode = GL10.GL_TRIANGLES;
     	    	this.shapeCount = 3;
 		    	break;
@@ -123,14 +166,51 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 		            -1.5f, -0.25f, 0f,
 		             0.5f, -1.25f, 0f
 		        )));
+    			colorCoords.addAll(((List<Float>)Arrays.asList(
+			            0.0f,  1.0f,  0.0f,  1.0f,
+			            0.0f,  1.0f,  0.0f,  1.0f
+			    								)));
 		    	this.drawMode = GL10.GL_LINE_LOOP;
     	    	this.shapeCount = 2;
 		    	break;
+    		case 4:
+    			/** 
+    			 * The initial vertex definition
+    			 * 
+    			 * It defines the eight vertices a cube has
+    			 * based on the OpenGL coordinate system
+    			 */
+    			shapeCoords.addAll(((List<Float>)Arrays.asList(	
+    					            -1.0f, -1.0f, -1.0f,	//lower back left (0)
+    					            1.0f, -1.0f, -1.0f,		//lower back right (1)
+    					            1.0f,  1.0f, -1.0f,		//upper back right (2)
+    					            -1.0f, 1.0f, -1.0f,		//upper back left (3)
+    					            -1.0f, -1.0f,  1.0f,	//lower front left (4)
+    					            1.0f, -1.0f,  1.0f,		//lower front right (5)
+    					            1.0f,  1.0f,  1.0f,		//upper front right (6)
+    					            -1.0f,  1.0f,  1.0f		//upper front left (7)
+    					    							)));
+    			colorCoords.addAll(((List<Float>)Arrays.asList(
+			            0.0f,  1.0f,  0.0f,  1.0f,
+			            0.0f,  1.0f,  0.0f,  1.0f,
+			            1.0f,  0.5f,  0.0f,  1.0f,
+			            1.0f,  0.5f,  0.0f,  1.0f,
+			            1.0f,  0.0f,  0.0f,  1.0f,
+			            1.0f,  0.0f,  0.0f,  1.0f,
+			            0.0f,  0.0f,  1.0f,  1.0f,
+			            1.0f,  0.0f,  1.0f,  1.0f
+			    								)));
+    			this.drawMode = GL10.GL_TRIANGLES;
+    			this.shapeCount = 36;
+    			break;
 		    default:
 		    	break;
     	}
     	
-        // initialize vertex Buffer for triangle  
+    	
+    	
+    	
+        // initialize vertex Buffer  
         ByteBuffer vbb = ByteBuffer.allocateDirect(
                 // (# of coordinate values * 4 bytes per float)
                 shapeCoords.size() * 4); 
@@ -143,6 +223,18 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
         }
         shapeVB.put(fShapeCoords);    // add the coordinates to the FloatBuffer
         shapeVB.position(0);            // set the buffer to read the first coordinate
-    
+ /*
+        //initialize color Buffer
+        vbb = ByteBuffer.allocateDirect(colorCoords.size() * 4);
+		vbb.order(ByteOrder.nativeOrder());
+		colorVB = vbb.asFloatBuffer();
+		Float FColorCoords[] = (colorCoords.toArray(new Float[colorCoords.size()]));
+		float[] fColorCoords = new float[FShapeCoords.length];
+		for(int n=0; n<FColorCoords.length; n++) {
+			fColorCoords[n] = FColorCoords[n].floatValue();
+		}
+		colorVB.put(fColorCoords);
+		colorVB.position(0);
+   */
     }
 }

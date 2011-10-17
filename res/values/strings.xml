@@ -6,6 +6,7 @@
     <string name="a1">Square</string>
     <string name="a2">Triangle</string>
     <string name="a3">Line</string>
+    <string name="a4">Cube</string>
     
     <string name="openglactivity_menu_touch">Trigger Touch Mode</string>
 </resources>
