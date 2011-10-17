@@ -58,7 +58,7 @@ public class OpenGLActivity extends Activity {
     	//find which item has been selected
     	switch(item.getItemId()) {
     		case R.id.openglactivityMenuTouch:
-    			mRenderer.triggerTouchSwitch();
+    			((LearningOpenGLApp)this.getApplication()).triggerTouchMode();
     			return true;
     	}
     	//return false if nothing handled

@@ -33,7 +33,6 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 	
 	public OpenGLRenderer(LearningOpenGLApp app) {
 		this.App = app;
-		this.b_touchSwitch = false;
 	}
 	
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
@@ -65,7 +64,7 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
         GLU.gluLookAt(gl, 0, 0, -5, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
         
         // Create a rotation for the triangle
-        if(this.b_touchSwitch)
+        if(this.App.getTouchMode())
         	//touch rotate
         	gl.glRotatef(mAngle, 0.0f, 0.0f, 1.0f);
         else {
@@ -145,21 +144,5 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
         shapeVB.put(fShapeCoords);    // add the coordinates to the FloatBuffer
         shapeVB.position(0);            // set the buffer to read the first coordinate
     
-    }
-   
-    /**
-     * Trigger the touch switch on/off
-     */
-    public void triggerTouchSwitch() {
-    	if(this.b_touchSwitch == true)
-    		this.b_touchSwitch = false;
-    	else if(this.b_touchSwitch == false)
-    		this.b_touchSwitch = true;
-    }
-    /**
-     * Get the touch switch value
-     */
-    public boolean checkTouchSwitch() {
-    	return this.b_touchSwitch;
     }
 }
