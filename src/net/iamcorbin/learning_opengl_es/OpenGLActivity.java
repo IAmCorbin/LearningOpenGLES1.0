@@ -4,19 +4,26 @@ import android.app.Activity;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 
 public class OpenGLActivity extends Activity {
     
     private GLSurfaceView mGLView;
+    private OpenGLRenderer mRenderer;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
+        //setup renderer
+        mRenderer = new OpenGLRenderer((LearningOpenGLApp)this.getApplication());
+        
         // Create a GLSurfaceView instance and set it
         // as the ContentView for this Activity
-        mGLView = new HelloOpenGLES20SurfaceView(this, (LearningOpenGLApp)this.getApplication());
+        mGLView = new HelloOpenGLES20SurfaceView(this, mRenderer);
         setContentView(mGLView);
     }
     
@@ -38,6 +45,25 @@ public class OpenGLActivity extends Activity {
         // this is a good place to re-allocate them.
         mGLView.onResume();
     }
+    
+    public boolean onCreateOptionsMenu(Menu menu) {
+    	super.onCreateOptionsMenu(menu);
+    	MenuInflater inflater = getMenuInflater();
+    	inflater.inflate(R.menu.openglactivity, menu);
+    	return true;
+    }
+    
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	super.onOptionsItemSelected(item);
+    	//find which item has been selected
+    	switch(item.getItemId()) {
+    		case R.id.openglactivityMenuTouch:
+    			mRenderer.triggerTouchSwitch();
+    			return true;
+    	}
+    	//return false if nothing handled
+    	return false;
+    }
 }
   
 class HelloOpenGLES20SurfaceView extends GLSurfaceView {
@@ -48,19 +74,18 @@ class HelloOpenGLES20SurfaceView extends GLSurfaceView {
     private float mPreviousY;
 	
 	
-    public HelloOpenGLES20SurfaceView(Context context, LearningOpenGLApp app){
+    public HelloOpenGLES20SurfaceView(Context context, OpenGLRenderer renderer){
         super(context);
         
         // Set the Renderer for drawing on the GLSurfaceView
         
-        mRenderer = new OpenGLRenderer(app);
+        mRenderer = renderer;
         setRenderer(mRenderer);
-        
         // Render the view only when there is a change
-        setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+        //setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
     }
     
-    @Override 
+    @Override
     public boolean onTouchEvent(MotionEvent e) {
         // MotionEvent reports input details from the touch screen
         // and other input controls. In this case, you are only

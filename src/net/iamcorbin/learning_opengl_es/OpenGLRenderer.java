@@ -12,6 +12,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
+import android.os.SystemClock;
 
 public class OpenGLRenderer implements GLSurfaceView.Renderer {
 
@@ -25,11 +26,14 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 	private int shapeCount;
 	//activity number
 	private int activityNum;
+	//touch switch
+	private boolean b_touchSwitch;
 	
 	public float mAngle;
 	
 	public OpenGLRenderer(LearningOpenGLApp app) {
 		this.App = app;
+		this.b_touchSwitch = false;
 	}
 	
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
@@ -61,11 +65,15 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
         GLU.gluLookAt(gl, 0, 0, -5, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
         
         // Create a rotation for the triangle
-        //auto rotate
-        //long time = SystemClock.uptimeMillis() % 4000L;
-        //float angle = 0.090f * ((int) time);
-        //touch rotate
-        gl.glRotatef(mAngle, 0.0f, 0.0f, 1.0f);  
+        if(this.b_touchSwitch)
+        	//touch rotate
+        	gl.glRotatef(mAngle, 0.0f, 0.0f, 1.0f);
+        else {
+        	//auto rotate
+            long time = SystemClock.uptimeMillis() % 4000L;
+            float angle = 0.090f * ((int) time);
+            gl.glRotatef(angle, 0.0f, 0.0f, 1.0f);
+        }
         
         // Draw the triangle
         gl.glColor4f(0.63671875f, 0.76953125f, 0.22265625f, 0.0f);
@@ -137,5 +145,21 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
         shapeVB.put(fShapeCoords);    // add the coordinates to the FloatBuffer
         shapeVB.position(0);            // set the buffer to read the first coordinate
     
+    }
+   
+    /**
+     * Trigger the touch switch on/off
+     */
+    public void triggerTouchSwitch() {
+    	if(this.b_touchSwitch == true)
+    		this.b_touchSwitch = false;
+    	else if(this.b_touchSwitch == false)
+    		this.b_touchSwitch = true;
+    }
+    /**
+     * Get the touch switch value
+     */
+    public boolean checkTouchSwitch() {
+    	return this.b_touchSwitch;
     }
 }
