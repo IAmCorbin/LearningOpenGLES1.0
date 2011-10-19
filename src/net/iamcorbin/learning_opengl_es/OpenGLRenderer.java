@@ -14,9 +14,11 @@ import javax.microedition.khronos.opengles.GL10;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
 import android.os.SystemClock;
+import android.util.Log;
 
 public class OpenGLRenderer implements GLSurfaceView.Renderer {
 
+	private static final String TAG = "OpenGLRenderer_DEBUG";
 	//application reference
 	private LearningOpenGLApp App;
 	//shapes
@@ -29,11 +31,15 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 	private int shapeCount;
 	//activity number
 	private int activityNum;
+	//accelerometer values - passed in from OpenGLActivity
+	private float accel[];
 	
-	public float mAngle;
+	public float xAngle;
+	public float yAngle;
+	public float zAngle;
 	
 	private final double PI = 3.141592653;
-	private int i_numVertices = 36;
+	private int i_numVertices = 55;
 	
 	//cube indices for activity 4
 	private byte indices[] = {
@@ -52,9 +58,13 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 									};
 	private ByteBuffer indexBuffer;
 	
+	/**
+	 * Constructor 
+	 * @param app Reference to the Application Object
+	 */
 	public OpenGLRenderer(LearningOpenGLApp app) {
 		this.App = app;
-		
+		this.accel = accel;
 		indexBuffer = ByteBuffer.allocateDirect(indices.length);
 		indexBuffer.put(indices);
 		indexBuffer.position(0);
@@ -84,16 +94,19 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
         
         // Set GL_MODELVIEW transformation mode
         gl.glMatrixMode(GL10.GL_MODELVIEW);
+        //gl.glMatrixMode(GL10.GL_PROJECTION);
         gl.glLoadIdentity();   // reset the matrix to its default state
-        
+        //gl.glFrustumf(-4.0f, 4.0f, -6.0f, 6.0f, -20.0f, 20.0f);
         // When using GL_MODELVIEW, you must set the view point
         GLU.gluLookAt(gl, 0, 0, -5, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
         
         // Create a rotation for shapes
-        if(this.App.getTouchMode())
+        if(this.App.getTouchMode()) {
         	//touch rotate
-        	gl.glRotatef(mAngle, 0.0f, 0.0f, 1.0f);
-        else {
+        	gl.glRotatef(xAngle, 1.0f, 0.0f, 0.0f);
+        	gl.glRotatef(yAngle, 0.0f, 1.0f, 0.0f);
+        	gl.glRotatef(zAngle, 0.0f, 0.0f, 1.0f);
+        } else {
         	//auto rotate
             long time = SystemClock.uptimeMillis() % 4000L;
             float angle = 0.090f * ((int) time);
@@ -106,8 +119,8 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
         gl.glVertexPointer(3, GL10.GL_FLOAT, 0, shapeVB);
         gl.glColorPointer(4, GL10.GL_FLOAT, 0, colorVB);
         // Draw the shapes
-        if(this.activityNum > 4) {
-        	//activity 4 - cube
+        if(this.activityNum > 5) {
+        	//activity 6 - cube
         	//make smaller
         	gl.glScalef(-0.5f, -0.5f, -0.5f);
         	//draw
@@ -185,7 +198,9 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 		    	break;
     		case 4:
     			//circle
+    			//radius
     			float R = 0.5f;
+    			//angle
     			float t = 0;
     			Random rand = new Random();
     			
@@ -193,16 +208,43 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
     			shapeCoords.addAll(((List<Float>)Arrays.asList(0f, 0f, 0f)));
     			colorCoords.addAll(((List<Float>)Arrays.asList(1.0f,  1.0f,  1.0f,  1.0f)));
     			
-    			for(int n=0; n< i_numVertices; n++) {
+    			for(int n=0; n < i_numVertices; n++) {
     				shapeCoords.addAll(((List<Float>)Arrays.asList((float) (R * Math.cos(t)), (float) (R * Math.sin(t)), 0f)));
+    				//random color
     				colorCoords.addAll(((List<Float>)Arrays.asList(rand.nextFloat(), rand.nextFloat(), rand.nextFloat(), 0f)));
+    				//increment angle
     				t += 2 * PI / i_numVertices;
+    				Log.d(TAG, "t = "+String.valueOf(t)+
+    						" | x = "+String.valueOf(R * Math.cos(t))+ 
+    						" | y = "+String.valueOf(R * Math.sin(t))+" | n = "+String.valueOf(n));
     			}
     			
 		    	this.drawMode = GL10.GL_TRIANGLE_FAN;
-    	    	this.shapeCount = 37;
-		    	break;	
+    	    	this.shapeCount = this.i_numVertices+1;
+		    	break;
     		case 5:
+    			//line circle
+    			//radius
+    			float R2 = 0.5f;
+    			//angle
+    			float t2 = 0;
+    			Random rand2 = new Random();
+    			
+    			for(int n=0; n < i_numVertices; n++) {
+    				shapeCoords.addAll(((List<Float>)Arrays.asList((float) (R2 * Math.cos(t2)), (float) (R2 * Math.sin(t2)), 0f)));
+    				//random color
+    				colorCoords.addAll(((List<Float>)Arrays.asList(rand2.nextFloat(), rand2.nextFloat(), rand2.nextFloat(), 0f)));
+    				//increment angle
+    				t2 += 2 * PI / i_numVertices;
+    				Log.d(TAG, "t = "+String.valueOf(t2)+
+    						" | x = "+String.valueOf(R2 * Math.cos(t2))+ 
+    						" | y = "+String.valueOf(R2 * Math.sin(t2))+" | n = "+String.valueOf(n));
+    			}
+    			
+		    	this.drawMode = GL10.GL_LINE_LOOP;
+    	    	this.shapeCount = this.i_numVertices;
+		    	break;
+    		case 6:
     			/** 
     			 * The initial vertex definition
     			 * 

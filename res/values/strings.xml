@@ -7,7 +7,9 @@
     <string name="a2">Triangle</string>
     <string name="a3">Lines</string>
     <string name="a4">Circle</string>
-    <string name="a5">Cube</string>
+    <string name="a5">Line Circle</string>
+    <string name="a6">Cube</string>
+    
     
     <string name="openglactivity_menu_touch">Trigger Touch Mode</string>
 </resources>

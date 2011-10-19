@@ -13,7 +13,7 @@ import android.widget.Button;
  */
 public class MainMenu extends Activity implements OnClickListener {
 	
-	private Button[] buttons = new Button[5];
+	private Button[] buttons = new Button[6];
 	
     /** Called when the activity is first created. */
     @Override
@@ -26,6 +26,7 @@ public class MainMenu extends Activity implements OnClickListener {
         this.buttons[2] = (Button)findViewById(R.id.a3);
         this.buttons[3] = (Button)findViewById(R.id.a4);
         this.buttons[4] = (Button)findViewById(R.id.a5);
+        this.buttons[5] = (Button)findViewById(R.id.a6);
         for(int x=0; x < this.buttons.length; x++) {
         	this.buttons[x].setOnClickListener(this);
         }
@@ -51,6 +52,9 @@ public class MainMenu extends Activity implements OnClickListener {
     			break;
     		case R.id.a5:
     			num = 5;
+    			break;	
+    		case R.id.a6:
+    			num = 6;
     			break;	
     		default:
     			num = 0;

@@ -2,8 +2,14 @@ package net.iamcorbin.learning_opengl_es;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -11,15 +17,20 @@ import android.view.MotionEvent;
 
 public class OpenGLActivity extends Activity {
     
+	private static final String TAG = "OpenGLActivity_DEBUG";
+	
     private GLSurfaceView mGLView;
     private OpenGLRenderer mRenderer;
-    
+        
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
         //setup renderer
         mRenderer = new OpenGLRenderer((LearningOpenGLApp)this.getApplication());
+        
+        //force portrait view
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         
         // Create a GLSurfaceView instance and set it
         // as the ContentView for this Activity
@@ -68,11 +79,25 @@ public class OpenGLActivity extends Activity {
   
 class HelloOpenGLES20SurfaceView extends GLSurfaceView {
 
+	private static final String TAG = "HelloOpenGLES20SurfaceView_DEBUG";
+	
+	
+	
 	private final float TOUCH_SCALE_FACTOR = 180.0f / 320;
     private OpenGLRenderer mRenderer;
     private float mPreviousX;
     private float mPreviousY;
-	
+    
+    //accelerometer sensor
+	private SensorManager sensorManager;
+	//accelerometer values
+	//[0]x -roll;
+	//[1]y - pitch;
+	//[2]z - yaw;
+	private float[] accel;
+	//rotation matrix
+	private float[] rmatrix;
+	private static final float f_movementMod = 0.8f;
 	
     public HelloOpenGLES20SurfaceView(Context context, OpenGLRenderer renderer){
         super(context);
@@ -83,6 +108,15 @@ class HelloOpenGLES20SurfaceView extends GLSurfaceView {
         setRenderer(mRenderer);
         // Render the view only when there is a change
         //setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+        
+        
+        accel = new float[] {0f, 0f, 0f, 0f, 0f, 0f};
+        rmatrix = new float[9];
+        sensorManager = (SensorManager)context.getSystemService(Context.SENSOR_SERVICE);
+        Sensor accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        sensorManager.registerListener(sensorEventListener,
+                                       accelerometer,
+                                       SensorManager.SENSOR_DELAY_FASTEST);
     }
     
     @Override
@@ -110,12 +144,55 @@ class HelloOpenGLES20SurfaceView extends GLSurfaceView {
                   dy = dy * -1 ;
                 }
                 
-                mRenderer.mAngle += (dx + dy) * TOUCH_SCALE_FACTOR;
+                mRenderer.zAngle += (dx + dy) * TOUCH_SCALE_FACTOR;
                 requestRender();
         }
 
         mPreviousX = x;
         mPreviousY = y;
         return true;
-    } 
+    }
+    
+    private final SensorEventListener sensorEventListener = new SensorEventListener() {
+        double calibration = SensorManager.STANDARD_GRAVITY;
+        
+        public void onAccuracyChanged(Sensor sensor, int accuracy) { }
+
+        public void onSensorChanged(SensorEvent event) {
+        		
+          
+          if(event.values[0] > 1)
+        	  mRenderer.yAngle -= f_movementMod;
+          else if(event.values[0] < -1)
+        	  mRenderer.yAngle += f_movementMod;
+        	//Log.d(TAG,"values[0]="+event.values[0]+"accel[0]="+accel[0]+" | Math.abs="+Math.abs(event.values[0] % accel[0]));
+        	//pitch check?
+        
+          if(event.values[1] > 1) {
+        	 mRenderer.xAngle -= f_movementMod;
+        	 //Log.d(TAG, "event.values[1]="+event.values[1]);
+          }
+          else if(event.values[1] < -1) {
+        	 mRenderer.xAngle += f_movementMod;
+        	 //Log.d(TAG, "event.values[1]="+event.values[1]);
+          }
+        
+          /*
+          if(event.values[2] > 1) {
+        	  mRenderer.xAngle += f_movementMod;
+        	  Log.d(TAG, "event.values[2]="+event.values[2]);
+          } else if(event.values[2] < -1) {
+        	  mRenderer.xAngle -= f_movementMod;
+              Log.d(TAG, "event.values[2]="+event.values[2]);
+          }
+          */
+          accel[0] = event.values[0];
+          accel[1] = event.values[1];
+          //accel[2] = event.values[2];
+          
+          
+          //Log.d(TAG,"Accel-sensor | roll:"+accel[0]+"| pitch:"+accel[1]+"| yaw:"+accel[2]);
+        }
+      };
+    
 }
