@@ -34,6 +34,10 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 	//accelerometer values - passed in from OpenGLActivity
 	private float accel[];
 	
+	private int row = 10;
+	private int column = 10;
+	
+	
 	public float xAngle;
 	public float yAngle;
 	public float zAngle;
@@ -80,6 +84,14 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
         // Enable use of vertex arrays
         gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
         gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
+        
+        //enable 3d display options
+        gl.glEnable(GL10.GL_DEPTH_TEST);
+        //gl.glCullFace(GL10.GL_BACK);
+        //gl.glFrontFace(GL10.GL_CCW);
+        //gl.glEnable(GL10.GL_CULL_FACE);
+        //gl.glDisable(GL10.GL_CULL_FACE);
+        
     }
     
     public void onDrawFrame(GL10 gl) {
@@ -119,7 +131,7 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
         gl.glVertexPointer(3, GL10.GL_FLOAT, 0, shapeVB);
         gl.glColorPointer(4, GL10.GL_FLOAT, 0, colorVB);
         // Draw the shapes
-        if(this.activityNum > 5) {
+        if(this.activityNum == 6) {
         	//activity 6 - cube
         	//make smaller
         	gl.glScalef(-0.5f, -0.5f, -0.5f);
@@ -150,8 +162,8 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
     		case 1:
     			//square
     			shapeCoords.addAll(((List<Float>)Arrays.asList(	
-    				-0.5f, 0.5f, 0f,
-    				-0.5f, -0.5f, 0f,
+    			   -0.5f, 0.5f, 0f,
+    			   -0.5f, -0.5f, 0f,
     				0.5f, 0.5f, 0f,
     				0.5f, -0.5f, 0f
     			)));
@@ -169,15 +181,21 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
     			shapeCoords.addAll(((List<Float>)Arrays.asList(	
 		            -0.5f, -0.25f, 0f,
 		             0.5f, -0.25f, 0f,
-		             0.0f,  0.559016994f, 0f
+		             0.0f,  0.559016994f, 0f,
+		             0.0f,  0.559016994f, 1f,
+		             0.5f, -0.25f, 1f,
+		            -0.5f, -0.25f, 1f
 		        )));
     			colorCoords.addAll(((List<Float>)Arrays.asList(
 			            0.0f,  1.0f,  0.0f,  1.0f,
 			            0.0f,  1.0f,  0.0f,  1.0f,
-			            1.0f,  0.5f,  0.0f,  1.0f
+			            1.0f,  0.5f,  0.0f,  1.0f,
+			            1.0f,  0.5f,  0.0f,  -1.0f,
+			            0.0f,  1.0f,  0.0f,  -1.0f,
+			            0.0f,  1.0f,  0.0f,  -1.0f
 			    								)));
 		    	this.drawMode = GL10.GL_TRIANGLES;
-    	    	this.shapeCount = 3;
+    	    	this.shapeCount = 6;
 		    	break;
     		case 3:
     			//lines
@@ -203,7 +221,7 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
     			//angle
     			float t = 0;
     			Random rand = new Random();
-    			
+
     			//center point
     			shapeCoords.addAll(((List<Float>)Arrays.asList(0f, 0f, 0f)));
     			colorCoords.addAll(((List<Float>)Arrays.asList(1.0f,  1.0f,  1.0f,  1.0f)));
@@ -214,9 +232,9 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
     				colorCoords.addAll(((List<Float>)Arrays.asList(rand.nextFloat(), rand.nextFloat(), rand.nextFloat(), 0f)));
     				//increment angle
     				t += 2 * PI / i_numVertices;
-    				Log.d(TAG, "t = "+String.valueOf(t)+
+    				/*Log.d(TAG, "t = "+String.valueOf(t)+
     						" | x = "+String.valueOf(R * Math.cos(t))+ 
-    						" | y = "+String.valueOf(R * Math.sin(t))+" | n = "+String.valueOf(n));
+    						" | y = "+String.valueOf(R * Math.sin(t))+" | n = "+String.valueOf(n));*/
     			}
     			
 		    	this.drawMode = GL10.GL_TRIANGLE_FAN;
@@ -245,12 +263,7 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
     	    	this.shapeCount = this.i_numVertices;
 		    	break;
     		case 6:
-    			/** 
-    			 * The initial vertex definition
-    			 * 
-    			 * It defines the eight vertices a cube has
-    			 * based on the OpenGL coordinate system
-    			 */
+    			/** Cube **/
     			shapeCoords.addAll(((List<Float>)Arrays.asList(	
     					            -1.0f, -1.0f, -1.0f,	//lower back left (0)
     					            1.0f, -1.0f, -1.0f,		//lower back right (1)
@@ -274,6 +287,53 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
     			this.drawMode = GL10.GL_TRIANGLES;
     			this.shapeCount = 36;
     			break;
+    		case 7:
+    			//graph lines
+    			shapeCoords.addAll(((List<Float>)Arrays.asList(	
+			            -2.0f, 0.0f, 0.0f,	     //x line
+			            2.0f, 0.0f, 0.0f,		//
+			            0.0f, -2.0f, 0.0f,	//y line
+			            0.0f, 2.0f, 0.0f,		//
+			            0.0f, 0.0f, -2.0f,		//z line
+			            0.0f, 0.0f, 2.0f		//
+			    							)));
+		    	colorCoords.addAll(((List<Float>)Arrays.asList(
+		            0.0f,  1.0f,  0.0f,  1.0f,
+		            0.0f,  1.0f,  0.0f,  1.0f,
+		            1.0f,  0.0f,  0.0f,  1.0f,
+		            1.0f,  0.0f,  0.0f,  1.0f,
+		            0.0f,  0.0f,  1.0f,  1.0f,
+		            0.0f,  0.0f,  1.0f,  1.0f
+		    								)));
+    			this.drawMode = GL10.GL_LINES;
+    			this.shapeCount = 6;
+    			break;
+    		case 8:
+    			//hemisphere
+    			
+    			Random rand3 = new Random();
+    			R = 0.5f;
+    			
+	            float angStep = (float) ((PI / 2 ) / this.i_numVertices);
+	            float ang1 = 0;
+	            float ang2 = 0;
+	        	for(int r = 0; r < row; r++) {
+	        		for(int c = 0; c < column; c++) {
+	        			//draw 2 points
+	        			shapeCoords.addAll(((List<Float>)Arrays.asList(	
+	        					(float) (R * Math.cos(ang1) * Math.cos(ang2)), (float) ( R * Math.sin(ang1)), (float) ( R * Math.cos(ang1) * Math.sin(ang2)),
+	        					(float) (R * Math.cos(ang1+angStep) * Math.cos(ang2)), (float) (R * Math.sin(ang1+angStep)), (float) (R * Math.cos(ang1+angStep) * Math.sin(ang2)))));
+	        			//color points randomly
+	        			colorCoords.addAll(((List<Float>)Arrays.asList(rand3.nextFloat(), rand3.nextFloat(), rand3.nextFloat(), 0f,
+	        														   rand3.nextFloat(), rand3.nextFloat(), rand3.nextFloat(), 0f)));
+	        			//increment angle
+	        			ang2 += angStep;
+	        		}
+	        		ang1 += angStep;
+	        	}
+    			this.drawMode = GL10.GL_TRIANGLE_STRIP;
+    			this.shapeCount = 100;
+    			break;	
 		    default:
 		    	break;
     	}

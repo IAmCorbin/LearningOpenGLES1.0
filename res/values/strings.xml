@@ -9,6 +9,8 @@
     <string name="a4">Circle</string>
     <string name="a5">Line Circle</string>
     <string name="a6">Cube</string>
+    <string name="a7">Graph</string>
+    <string name="a8">Hemisphere</string>
     
     
     <string name="openglactivity_menu_touch">Trigger Touch Mode</string>

@@ -127,7 +127,7 @@ class HelloOpenGLES20SurfaceView extends GLSurfaceView {
 
         float x = e.getX();
         float y = e.getY();
-        
+
         switch (e.getAction()) {
             case MotionEvent.ACTION_MOVE:
     
@@ -146,6 +146,11 @@ class HelloOpenGLES20SurfaceView extends GLSurfaceView {
                 
                 mRenderer.zAngle += (dx + dy) * TOUCH_SCALE_FACTOR;
                 requestRender();
+                break;
+            case MotionEvent.ACTION_DOWN:
+            	if(x<10 && y<10)
+            		
+            	break;
         }
 
         mPreviousX = x;
@@ -158,6 +163,7 @@ class HelloOpenGLES20SurfaceView extends GLSurfaceView {
         
         public void onAccuracyChanged(Sensor sensor, int accuracy) { }
 
+        //map accelerometer to x and y object rotations
         public void onSensorChanged(SensorEvent event) {
         		
           

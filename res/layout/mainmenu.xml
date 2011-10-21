@@ -53,4 +53,18 @@
      android:text="@string/a6"
      android:layout_below="@id/a5"
      />
+     <Button
+     android:id="@+id/a7"
+     android:layout_height="wrap_content"
+     android:layout_width="fill_parent"
+     android:text="@string/a7"
+     android:layout_below="@id/a6"
+     />
+     <Button
+     android:id="@+id/a8"
+     android:layout_height="wrap_content"
+     android:layout_width="fill_parent"
+     android:text="@string/a8"
+     android:layout_below="@id/a7"
+     />
 </RelativeLayout>
